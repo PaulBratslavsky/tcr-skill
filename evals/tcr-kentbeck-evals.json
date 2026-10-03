@@ -41,6 +41,28 @@
         {"id": "one-callsite-at-a-time", "text": "Breaks the 3-callsite refactor into individual steps"},
         {"id": "logs-if-reverted-again", "text": "Would log again to tcr-failure-log.md if another revert happens"}
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "New Python project, only a pyproject.toml so far and no tests. Start a FizzBuzz kata with Kent Beck's TCR.",
+      "expected_output": "Agent runs steps through tcr.sh. It treats the empty suite (exit 3) as 'no tests yet', not as red, and makes the first step a test plus its minimal implementation, committed on green.",
+      "files": [],
+      "assertions": [
+        {"id": "uses-helper", "text": "Agent runs each step through the bundled tcr.sh instead of deciding commit/revert by hand"},
+        {"id": "empty-suite-not-red", "text": "Agent does not treat 'no tests collected' as a failure to revert"},
+        {"id": "test-with-implementation", "text": "First step adds a test together with the minimal implementation, not a lone failing test"}
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Using TCR, add a new module parser.py with tests. My first attempt failed and so did the second one.",
+      "expected_output": "Each red step fully reverts: new untracked files are removed, staged edits are undone, and the tree is clean. Both failures are kept in tcr-failure-log.md, committed, and neither is lost by the later revert.",
+      "files": [],
+      "assertions": [
+        {"id": "full-revert", "text": "After a red step, new untracked files and staged changes are gone and git status is clean"},
+        {"id": "log-survives", "text": "Failure-log entries from consecutive red steps are all preserved"},
+        {"id": "history-intact", "text": "Reverts discard only uncommitted work and never rewrite commit history"}
+      ]
     }
   ]
 }
